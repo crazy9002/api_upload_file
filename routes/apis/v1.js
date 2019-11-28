@@ -1,5 +1,5 @@
 const userController = require('../../controllers/apis/user');
-const uploadController = require('../../controllers/apis/upload');
+const uploadController = require('../../controllers/apis/upload.controller');
 
 const express = require('express');
 let router = express.Router();
