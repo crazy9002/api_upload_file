@@ -8,20 +8,24 @@ const storage = HDFSStorage.storage({
     port: 50070,
     path: "/webhdfs/v1",
     destination: "/tmp",
-    filename: function (req, file, cb) {
-        cb(null, file.originalname)
-    }
 });
 
 const handleUpload = (req, res) => {
 
-    let upload = multer({ storage: storage }).single('file');
+    let upload = multer({ storage: storage, fileFilter: fileFilter }).single('file');
 
     upload(req, res, function (err) {
-
         const file = req.file;
-        console.log(file);
-        if (req.fileValidationError) {
+        if (err) {
+            var result = {
+                error: {
+                    code: 'Not_Allowed_Extensions',
+                    message: err.message
+                },
+                data: null
+            }
+            return res.status(400).json(result);
+        } else if (req.fileValidationError) {
 
             var result = {
                 error: {
@@ -44,28 +48,6 @@ const handleUpload = (req, res) => {
             }
             return res.status(400).json(result);
 
-        }
-        else if (err instanceof multer.MulterError) {
-
-            var result = {
-                error: {
-                    code: 'Bad_Request',
-                    message: err
-                },
-                data: null
-            }
-            return res.status(400).json(result);
-
-        }
-        else if (err) {
-            var result = {
-                error: {
-                    code: 'Bad_Request',
-                    message: err
-                },
-                data: null
-            }
-            return res.status(400).json(result);
         }
 
         let dataMedia = getDetailFile(file);
@@ -98,11 +80,18 @@ const getDetailFile = (file) => {
         encoding: file.encoding,
         uri: file.path,
         type: file.mimetype,
-        duration: file.size,
+        duration: file.duration,
         filename: file.filename,
         status: 'PENDING'
     }
     return file;
+}
+
+const fileFilter = (req, file, cb) => {
+    if (!file.originalname.match(/\.(avi|mpg|flv|mp4|png)$/)) {
+        return cb(new Error('Please upload a supported file Video '), false);
+    }
+    return cb(null, true);
 }
 
 module.exports = {

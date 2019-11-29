@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+var cors = require('cors');
 
 module.exports = function () {
     let server = express(),
@@ -16,6 +17,7 @@ module.exports = function () {
         
         // add middleware to parse the json
         server.use(bodyParser.json());
+        server.use(cors());
         server.use(bodyParser.urlencoded({
             extended: false
         }));

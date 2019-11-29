@@ -2,6 +2,8 @@
 const path = require("path");
 const crypto = require("crypto");
 let webhdfs = require("webhdfs");
+const { getVideoDurationInSeconds }  =require('get-video-duration');
+
 var storage;
 (function (storage_1) {
     class HDFSStorage {
@@ -23,9 +25,10 @@ var storage;
         }
 
 
-        getFilename(callback) {
+        getFilename(callback,originalname) {
+            console.log(originalname);
             crypto.pseudoRandomBytes(16, (err, raw) => {
-                callback(err, err ? undefined : raw.toString("hex"));
+                callback(err, err ? undefined : raw.toString("hex")+path.extname(originalname).toLowerCase());
             });
         }
         _handleFile = (req, file, callback)=> {
@@ -36,7 +39,7 @@ var storage;
                 return new Promise((resolve, reject) => {
                     that.getFilename((err, filename) => {
                         err ? reject(err) : resolve(filename);
-                    });
+                    }, file.originalname);
                 });
             };
             var promise2 = (filename) => {
@@ -50,6 +53,9 @@ var storage;
                         });
                     });
                     file.stream.pipe(out);
+                    getVideoDurationInSeconds(file.stream).then((duration) => {
+                        file.duration = Math.ceil(duration);
+                      })
                 });
             };
             var promise3 = (filename, bytesWritten) => {
