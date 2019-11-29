@@ -9,7 +9,6 @@ var jwt = require('jsonwebtoken');
 
 function verifyBearerToken(token) {
     return new Promise((resolve, reject) => {
-        console.log(process.env.JWT_SECRET);
         jwt.verify(token, '548246b2-eaf5-4a07-955c-e3ae2251d0e9', { algorithms: ['HS256'] }, (err, payload) => {
             if (err) return reject(err);
             return resolve(payload);
@@ -36,6 +35,7 @@ function authenticateMiddleware(req, res, next) {
         return res.status(401).json(result);
     })
 }
+
 
 router.use('/users', userController);
 router.use('/upload', authenticateMiddleware, uploadController);

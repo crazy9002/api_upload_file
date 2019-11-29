@@ -1,27 +1,21 @@
-
 const multer = require('multer');
 const Media = require('./../models/media.model');
+const HDFSStorage = require('./../storage/hdfs');
 
-var storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'public')
-    },
-    filename: function (req, file, cb) {
-        cb(null, file.fieldname + '-' + Date.now())
-    }
-})
+// var storage = multer.diskStorage({
+//     destination: function (req, file, cb) {
+//         cb(null, 'public')
+//     },
+//     filename: function (req, file, cb) {
+//         cb(null, file.fieldname + '-' + Date.now())
+//     }
+// })
 
 const handleUpload = (req, res) => {
-
-    let upload = multer({ storage: storage }).single('file');
-
+    
     upload(req, res, function (err) {
-            
         const file = req.file;
-
-
         if (req.fileValidationError) {
-
             var result = {
                 error: {
                     code: 'Unprocessable_Entity',
@@ -90,8 +84,8 @@ const handleUpload = (req, res) => {
         });
 
     });
-
 }
+
 
 const getDetailFile = (file) => {
     var file = {
@@ -106,5 +100,5 @@ const getDetailFile = (file) => {
 }
 
 module.exports = {
-    handleUpload: handleUpload
+    insertMedia: insertMedia
 }
