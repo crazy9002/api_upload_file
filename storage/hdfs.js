@@ -97,7 +97,6 @@ var storage;
 
     storage_1.HDFSStorage = HDFSStorage;
     function storage(opts) {
-        console.log(new HDFSStorage(opts));
         return new HDFSStorage(opts);
     }
     storage_1.storage = storage;

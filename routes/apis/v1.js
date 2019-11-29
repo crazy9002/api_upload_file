@@ -38,5 +38,5 @@ function authenticateMiddleware(req, res, next) {
 
 
 router.use('/users', userController);
-router.use('/upload', authenticateMiddleware, uploadController);
+router.use('/upload', authenticateMiddleware, uploadController.handleUpload);
 module.exports = router;

@@ -11,6 +11,7 @@ const mediaSchema = new Schema({
     type: String,
     duration: String,
     thumbnail: String,
+    filename: String,
     status: { type: String, default: 'PENDING' },
     uploadedAt: { type: Date, default: Date.now },
     deletedAt: { type: Date, default: null},
